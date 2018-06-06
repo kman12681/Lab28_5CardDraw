@@ -47,7 +47,7 @@ namespace Lab_28.Controllers
 
             try
             {
-                JObject JsonData = JObject.Parse(DeckData);                               
+                JObject JsonData = JObject.Parse(DeckData);
                 Session["DeckID"] = JsonData["deck_id"];
 
             }
@@ -64,7 +64,7 @@ namespace Lab_28.Controllers
 
         public ActionResult DealFive()
         {
-            
+
             object ID = Session["DeckID"];
             HttpWebRequest DealFive = WebRequest.CreateHttp($"https://deckofcardsapi.com/api/deck/{ID}/draw/?count=5&FcstType=json");
             DealFive.UserAgent = ".NET Framework Test Client";
@@ -106,12 +106,65 @@ namespace Lab_28.Controllers
                 ViewBag.ErrorDescription = e.Message;
                 return View();
             }
+            if (ViewBag.Remaining == 0)
+            {
+                return RedirectToAction("Reshuffle");
+            }
+            else
+            {
 
-            return View();
+                return View();
+            }
 
         }
 
+        public ActionResult Reshuffle()
+        {
+            object ID = Session["DeckID"];
+            HttpWebRequest Shuffle = WebRequest.CreateHttp($"https://deckofcardsapi.com/api/deck/{ID}/shuffle/");
+            Shuffle.UserAgent = ".NET Framework Test Client";
 
+            HttpWebResponse Response;
+
+            try
+            {
+                Response = (HttpWebResponse)Shuffle.GetResponse();
+            }
+            catch (WebException e)
+            {
+                ViewBag.Error = "Exception";
+                ViewBag.ErrorDescription = e.Message;
+                return View();
+            }
+
+            if (Response.StatusCode != HttpStatusCode.OK)
+            {
+                ViewBag.Error = Response.StatusCode;
+                ViewBag.ErrorDescription = Response.StatusDescription;
+                return View();
+            }
+
+            StreamReader reader = new StreamReader(Response.GetResponseStream());
+            string DeckData = reader.ReadToEnd();
+
+            try
+            {
+                JObject JsonData = JObject.Parse(DeckData);
+
+            }
+            catch (Exception e)
+            {
+                ViewBag.Error = "JSON Issue";
+                ViewBag.ErrorDescription = e.Message;
+                return View();
+            }
+
+            return RedirectToAction("DealFive");
+
+        }
 
     }
+
+
+
 }
