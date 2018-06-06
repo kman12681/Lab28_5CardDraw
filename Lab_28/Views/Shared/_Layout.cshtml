@@ -16,11 +16,12 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("5 Card Draw", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                @Html.ActionLink("Card Game", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">                    
-                    <li>@Html.ActionLink("Shuffle and Deal", "ShuffleAndDeal", "Home")</li>
+                <ul class="nav navbar-nav">  
+                    <li>@Html.ActionLink("New Deck", "Deal", "Home")</li>
+                    <li>@Html.ActionLink("Draw 5 Cards", "DealFive", "Home")</li>
                 </ul>
             </div>
         </div>
